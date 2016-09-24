@@ -4,6 +4,7 @@
 #
 
 import psycopg2
+import bleach
 
 
 def connect():
@@ -13,14 +14,30 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    DB = connect()
+    c = DB.cursor()
+    c.execute("DELETE FROM matches;")
+    DB.commit()
+    DB.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
+    DB = connect()
+    c = DB.cursor()
+    c.execute("DELETE FROM players;")
+    DB.commit()
+    DB.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
+    DB = connect()
+    c = DB.cursor() 
+    c.execute("SELECT COUNT(players.id) FROM players;")
+    players_count = c.fetchone()[0]
+    return players_count
+
 
 
 def registerPlayer(name):
@@ -32,7 +49,12 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-
+    player = bleach.clean(name)
+    DB = connect()
+    c = DB.cursor()
+    c.execute("INSERT INTO players (name) VALUES (%s)", (player,))
+    DB.commit()
+    DB.close()
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
@@ -47,7 +69,12 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-
+    DB = connect()
+    c = DB.cursor()
+    c. execute("SELECT * FROM playerstandings")
+    standings = c.fetchall()
+    DB.close()
+    return standings
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -56,6 +83,11 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    DB = connect()
+    c = DB.cursor()
+    c.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s);", (winner, loser))
+    DB.commit()
+    DB.close()
  
  
 def swissPairings():
