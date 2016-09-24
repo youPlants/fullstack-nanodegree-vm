@@ -10,18 +10,18 @@ DROP DATABASE tournament;
 CREATE DATABASE tournament;
 --Connect to tournament DB
 \c tournament
-
+--Create the players table
 CREATE TABLE players(
 	id SERIAL primary key,
 	name TEXT
 );
-
+--Create the matches table 
 CREATE TABLE matches(
 	id SERIAL primary key,
 	winner INTEGER REFERENCES players (id),
 	loser INTEGER REFERENCES players (id)
 );
-
+--Create the players standings view
 CREATE OR REPLACE VIEW player_standings AS
 	SELECT 	players.id,
 			players.name,
