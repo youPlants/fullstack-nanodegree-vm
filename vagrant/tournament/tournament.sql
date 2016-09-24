@@ -22,8 +22,18 @@ CREATE TABLE matches(
 	loser INTEGER REFERENCES players (id)
 );
 
-CREATE OR REPLACE VIEW playerstandings AS 
-	SELECT	* FROM players;
+CREATE OR REPLACE VIEW player_standings AS
+	SELECT 	players.id,
+			players.name,
+			SUM(CASE WHEN players.id = matches.winner THEN 1 ELSE 0 END) AS wins,
+			COUNT(matches) as total
+	FROM players
+	LEFT OUTER JOIN matches
+	ON players.id = matches.winner or players.id = matches.loser
+	GROUP BY players.id
+	ORDER BY wins DESC,
+			total ASC;
+
 
 
 

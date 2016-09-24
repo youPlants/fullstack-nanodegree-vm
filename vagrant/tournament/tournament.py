@@ -71,7 +71,7 @@ def playerStandings():
     """
     DB = connect()
     c = DB.cursor()
-    c. execute("SELECT * FROM playerstandings")
+    c. execute("SELECT * FROM player_standings")
     standings = c.fetchall()
     DB.close()
     return standings
